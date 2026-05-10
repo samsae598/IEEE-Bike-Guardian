@@ -1,6 +1,6 @@
 #include <SPI.h>
 #include <MFRC522.h>
-#include <Servo.h>
+#include <ESP32Servo.h>
 #include <Wire.h>
 #include <WiFi.h>
 #include <WebServer.h>
