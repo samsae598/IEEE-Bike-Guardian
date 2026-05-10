@@ -3,8 +3,8 @@
 #include <WebServer.h>
 
 // --- WiFi Access Point ---
-const char* ssid     = "SmartBikeLock";
-const char* password = "bikelock123";
+const char* ssid     = "THEFT ALLERT";
+const char* password = "pineapple";
 
 WebServer server(80);
 
@@ -58,7 +58,7 @@ void handleRoot() {
   </style>
 </head>
 <body>
-  <h1>🔒 Smart Bike Lock</h1>
+  <h1> Smart Bike Lock</h1>
   <div class='card'>
     <div class='status-row'>
       <span>Motion</span>
