@@ -11,7 +11,7 @@ WebServer server(80);
 // --- MPU-6050 ---
 const int   MPU_ADDR     = 0x68;
 const float THRESHOLD    = 0.4;
-const int   SUSTAINED_MS = 20000;
+const int   SUSTAINED_MS = 10000;
 const int   SAMPLE_RATE_MS = 50;
 const int   GRACE_MS     = 2000;
 
@@ -53,6 +53,8 @@ void handleRoot() {
     .moving-no  { background: #4CAF50; }
     .event { padding: 6px 0; border-bottom: 1px solid #eee; font-size: 0.9em; color: #555; }
     .event:last-child { border-bottom: none; }
+    button { width: 100%; padding: 12px; margin-top: 12px; background: #f44336; color: white; border: none; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; }
+    button:hover { background: #d32f2f; }
   </style>
 </head>
 <body>
@@ -66,6 +68,7 @@ void handleRoot() {
       <span>Alarm</span>
       <span id='alarmBadge' class='badge alarm-off'>OFF</span>
     </div>
+    <button id='resetBtn' onclick='resetAlarm()' style='display:none;'>Reset Alarm</button>
   </div>
   <div class='card'>
     <b>Recent Events</b>
@@ -89,10 +92,15 @@ void handleRoot() {
           ab.textContent = d.alarm ? 'ALARM!' : 'OFF';
           ab.className = 'badge ' + (d.alarm ? 'alarm-on' : 'alarm-off');
 
+          document.getElementById('resetBtn').style.display = d.alarm ? 'block' : 'none';
+
           const ev = document.getElementById('events');
           ev.innerHTML = d.events.map(e => "<div class='event'>" + e + "</div>").join('');
         }
       });
+  }
+  function resetAlarm() {
+    fetch('/reset').then(() => { lastData = ""; poll(); });
   }
   setInterval(poll, 1000);
   poll();
@@ -101,6 +109,14 @@ void handleRoot() {
 </html>
 )rawliteral";
     server.send(200, "text/html", html);
+}
+
+void handleReset() {
+    alarmActive = false;
+    moving = false;
+    movementStart = 0;
+    addEvent("Alarm reset from dashboard");
+    server.send(200, "text/plain", "OK");
 }
 
 void handleStatus() {
@@ -154,11 +170,12 @@ void setup() {
 
     server.on("/", handleRoot);
     server.on("/status", handleStatus);
+    server.on("/reset", handleReset);
     server.begin();
     Serial.println("Web server started");
 
     // MPU
-    Wire.begin(21, 22); // change if your SDA/SCL pins differ
+    Wire.begin(8, 9); // SDA, SCL
     Wire.beginTransmission(MPU_ADDR);
     Wire.write(0x6B);
     Wire.write(0x00);
