@@ -3,15 +3,15 @@
 #include <WebServer.h>
 
 // --- WiFi Access Point ---
-const char* ssid     = "SmartBikeLock";
-const char* password = "bikelock123";
+const char* ssid     = "THEFT ALLERT";
+const char* password = "pineapple";
 
 WebServer server(80);
 
 // --- MPU-6050 ---
 const int   MPU_ADDR     = 0x68;
 const float THRESHOLD    = 0.4;
-const int   SUSTAINED_MS = 10000;
+const int   SUSTAINED_MS = 8000;
 const int   SAMPLE_RATE_MS = 50;
 const int   GRACE_MS     = 2000;
 
@@ -58,7 +58,7 @@ void handleRoot() {
   </style>
 </head>
 <body>
-  <h1>🔒 Smart Bike Lock</h1>
+  <h1> Smart Bike Lock</h1>
   <div class='card'>
     <div class='status-row'>
       <span>Motion</span>
@@ -213,10 +213,10 @@ void loop() {
     } else {
         if (moving && millis() - lastMoveTime >= GRACE_MS) {
             moving = false;
-            if (alarmActive) addEvent("Alarm cleared");
-            alarmActive = false;
-            movementStart = 0;
-            addEvent("Movement stopped");
+            if (!alarmActive) {
+                movementStart = 0;
+                addEvent("Movement stopped");
+            }
         }
     }
 }
