@@ -3,10 +3,15 @@
 #include <WebServer.h>
 
 // --- WiFi Access Point ---
-const char* ssid     = "THEFT ALLERT";
+const char* ssid     = "THEFT ALERT";
 const char* password = "pineapple";
 
 WebServer server(80);
+
+// --- Buzzer ---
+const int buzzerPin = 18; 
+const int freq = 1000;  
+const int resolution = 8; 
 
 // --- MPU-6050 ---
 const int   MPU_ADDR     = 0x68;
@@ -174,6 +179,9 @@ void setup() {
     server.begin();
     Serial.println("Web server started");
 
+    // Buzzer
+    ledcAttach(buzzerPin, freq, resolution);
+
     // MPU
     Wire.begin(8, 9); // SDA, SCL
     Wire.beginTransmission(MPU_ADDR);
@@ -187,6 +195,15 @@ void setup() {
 
 void loop() {
     server.handleClient();
+
+    if (alarmActive) {
+        ledcWriteTone(buzzerPin, 3000);
+        delay(400);
+        ledcWriteTone(buzzerPin, 2200);
+        delay(400);
+    } else {
+        ledcWriteTone(0, 0); 
+    }
 
     if (millis() - lastSample < SAMPLE_RATE_MS) return;
     lastSample = millis();
