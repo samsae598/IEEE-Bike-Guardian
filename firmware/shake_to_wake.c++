@@ -202,7 +202,7 @@ void loop() {
         ledcWriteTone(buzzerPin, 2200);
         delay(400);
     } else {
-        ledcWriteTone(0, 0); 
+        ledcWriteTone(buzzerPin, 0); 
     }
 
     if (millis() - lastSample < SAMPLE_RATE_MS) return;
