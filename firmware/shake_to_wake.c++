@@ -1,3 +1,16 @@
+/* 
+ * HARDWARE WIRING
+ *
+ * MPU Pinout:
+ *   VCC -> 3.3V
+ *   GND -> GND
+ *   SDA -> Pin 8
+ *   SCL -> Pin 9
+ *   
+ * Buzzer Pinout:
+ *   POS -> Pin 18
+ *   NEG -> GND
+ */
 #include <Wire.h>
 #include <WiFi.h>
 #include <WebServer.h>
