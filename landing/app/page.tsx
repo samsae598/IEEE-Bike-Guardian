@@ -95,7 +95,7 @@ const sections = [
     leftLabel: 'System',
     title: 'How It Works',
     background:
-      'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?q=80&w=1920&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?q=80&w=1920&auto=format&fit=crop',
     details: (
       <>
         <p style={label}>End-to-End Flow</p>
@@ -319,7 +319,7 @@ export default function Home() {
         durations={{ change: 0.7, snap: 800 }}
         colors={{
           text: 'rgba(248,250,252,0.95)',
-          overlay: 'rgba(0,0,0,0.15)',
+          overlay: 'rgba(0,0,0,0.22)',
           pageBg: '#0F172A',
           stageBg: '#050D18',
         }}
