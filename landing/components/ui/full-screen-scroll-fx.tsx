@@ -24,6 +24,7 @@ type Section = {
   leftLabel?: ReactNode;
   title: string | ReactNode;
   rightLabel?: ReactNode;
+  body?: ReactNode;
   details?: ReactNode;
   renderBackground?: (active: boolean, previous: boolean) => ReactNode;
 };
@@ -128,12 +129,16 @@ export const FullScreenScrollFX = forwardRef<HTMLDivElement, FullScreenFXProps>(
     const headerRef = useRef<HTMLDivElement | null>(null);
     const footerTitleRef = useRef<HTMLDivElement | null>(null);
     const detailRefs = useRef<(HTMLDivElement | null)[]>([]);
+    const bodyRefs = useRef<(HTMLDivElement | null)[]>([]);
+    const hasBody = sections.some((s) => s.body);
 
     const stRef = useRef<ScrollTrigger | null>(null);
     const lastIndexRef = useRef(index);
+    const targetIndexRef = useRef(index); // where we're heading (may differ from lastIndex mid-animation)
     const isAnimatingRef = useRef(false);
     const isSnappingRef = useRef(false);
     const sectionTopRef = useRef<number[]>([]);
+    const pendingIndexRef = useRef<number | null>(null);
 
     const prefersReduced = useMemo(() => {
       if (typeof window === 'undefined') return false;
@@ -239,6 +244,11 @@ export const FullScreenScrollFX = forwardRef<HTMLDivElement, FullScreenFXProps>(
         if (el) gsap.set(el, { opacity: i === index ? 1 : 0, y: i === index ? 0 : 14 });
       });
 
+      // Set initial body states
+      bodyRefs.current.forEach((el, i) => {
+        if (el) gsap.set(el, { opacity: i === index ? 1 : 0, x: i === index ? 0 : 30 });
+      });
+
       const st = ScrollTrigger.create({
         trigger: fs,
         start: 'top top',
@@ -254,9 +264,13 @@ export const FullScreenScrollFX = forwardRef<HTMLDivElement, FullScreenFXProps>(
           if (motionOff || isSnappingRef.current) return;
           const prog = self.progress;
           const target = Math.min(total - 1, Math.floor(prog * total));
-          if (target !== lastIndexRef.current && !isAnimatingRef.current) {
-            const next = lastIndexRef.current + (target > lastIndexRef.current ? 1 : -1);
-            goTo(next, false);
+          // compare against targetIndexRef so mid-animation scroll reversals are caught
+          if (target !== targetIndexRef.current) {
+            if (!isAnimatingRef.current) {
+              goTo(target, false);
+            } else {
+              pendingIndexRef.current = target;
+            }
           }
         },
       });
@@ -283,7 +297,8 @@ export const FullScreenScrollFX = forwardRef<HTMLDivElement, FullScreenFXProps>(
     }, [total, initialIndex, motionOff, bgTransition, parallaxAmount]);
 
     const changeSection = (to: number) => {
-      if (to === lastIndexRef.current || isAnimatingRef.current) return;
+      if (isAnimatingRef.current || to === lastIndexRef.current) return;
+      targetIndexRef.current = to; // mark destination immediately
       const from = lastIndexRef.current;
       const down = to > from;
       isAnimatingRef.current = true;
@@ -321,6 +336,15 @@ export const FullScreenScrollFX = forwardRef<HTMLDivElement, FullScreenFXProps>(
           stagger: down ? 0.05 : -0.05,
           ease: 'power3.out',
         });
+      }
+
+      // Animate right-side body panels in/out
+      const prevBody = bodyRefs.current[from];
+      const newBody = bodyRefs.current[to];
+      if (prevBody) gsap.to(prevBody, { opacity: 0, x: down ? -20 : 20, duration: D * 0.35, ease: 'power2.out' });
+      if (newBody) {
+        gsap.set(newBody, { opacity: 0, x: down ? 30 : -30 });
+        gsap.to(newBody, { opacity: 1, x: 0, duration: D * 0.85, ease: 'power3.out', delay: D * 0.2 });
       }
 
       // Fade detail cards in/out
@@ -386,22 +410,24 @@ export const FullScreenScrollFX = forwardRef<HTMLDivElement, FullScreenFXProps>(
       gsap.delayedCall(D, () => {
         lastIndexRef.current = to;
         isAnimatingRef.current = false;
+        const pending = pendingIndexRef.current;
+        pendingIndexRef.current = null;
+        if (pending !== null && pending !== to) {
+          goTo(pending, false);
+        }
       });
     };
 
     const goTo = (to: number, withScroll = true) => {
       const clamped = clamp(to, 0, total - 1);
-      isSnappingRef.current = true;
       changeSection(clamped);
 
-      const pos = sectionTopRef.current[clamped];
-      const snapMs = durations.snap ?? 800;
-
       if (withScroll && typeof window !== 'undefined') {
+        isSnappingRef.current = true;
+        const pos = sectionTopRef.current[clamped];
+        const snapMs = durations.snap ?? 800;
         window.scrollTo({ top: pos, behavior: 'smooth' });
         setTimeout(() => (isSnappingRef.current = false), snapMs);
-      } else {
-        setTimeout(() => (isSnappingRef.current = false), 10);
       }
     };
 
@@ -450,6 +476,7 @@ export const FullScreenScrollFX = forwardRef<HTMLDivElement, FullScreenFXProps>(
       ['--fx-gap' as string]: `${gap}rem`,
       ['--fx-grid-px' as string]: `${gridPaddingX}rem`,
       ['--fx-row-gap' as string]: '10px',
+      ['--fx-content-cols' as string]: hasBody ? '1fr 1fr 1.1fr' : '1fr 2fr',
     };
 
     return (
@@ -536,24 +563,23 @@ export const FullScreenScrollFX = forwardRef<HTMLDivElement, FullScreenFXProps>(
                     })}
                   </div>
 
-                  {/* Right list */}
-                  <div className="fx-right" role="list">
-                    <div className="fx-track" ref={rightTrackRef}>
-                      {sections.map((s, i) => (
-                        <div
-                          key={`R-${s.id ?? i}`}
-                          className={`fx-item fx-right-item ${i === index ? 'active' : ''}`}
-                          ref={(el) => { if (el) rightItemRefs.current[i] = el; }}
-                          onClick={() => handleJump(i)}
-                          role="button"
-                          tabIndex={0}
-                          aria-pressed={i === index}
-                        >
-                          {s.rightLabel}
-                        </div>
-                      ))}
+                  {/* Right body panel */}
+                  {hasBody && (
+                    <div className="fx-body-col">
+                      {sections.map((s, i) =>
+                        s.body ? (
+                          <div
+                            key={`B-${s.id ?? i}`}
+                            className="fx-body-item"
+                            ref={(el) => { bodyRefs.current[i] = el; }}
+                          >
+                            {s.body}
+                          </div>
+                        ) : null
+                      )}
                     </div>
-                  </div>
+                  )}
+
                 </div>
 
                 {/* Detail cards — one per section, shown for the active slide */}
@@ -592,9 +618,6 @@ export const FullScreenScrollFX = forwardRef<HTMLDivElement, FullScreenFXProps>(
             </div>
           </div>
 
-          <div className="fx-end">
-            <p className="fx-fin">fin</p>
-          </div>
         </div>
 
         {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
@@ -646,11 +669,21 @@ export const FullScreenScrollFX = forwardRef<HTMLDivElement, FullScreenFXProps>(
           .fx-header > * { display: block; }
           .fx-content {
             grid-column: 1 / 13;
-            position: absolute; inset: 0;
-            display: grid; grid-template-columns: 1fr 1.3fr 1fr;
+            position: absolute; top: 0; left: 0; right: 0; bottom: 32vh;
+            display: grid; grid-template-columns: var(--fx-content-cols, 1fr 2fr);
             align-items: center;
-            height: 100%;
             padding: 0 var(--fx-grid-px);
+          }
+          .fx-body-col {
+            position: relative;
+            height: 60vh;
+            display: flex;
+            align-items: center;
+          }
+          .fx-body-item {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
           }
           .fx-left, .fx-right {
             height: 60vh;
@@ -699,9 +732,8 @@ export const FullScreenScrollFX = forwardRef<HTMLDivElement, FullScreenFXProps>(
           .fx-word { display: inline-block; vertical-align: middle; }
           .fx-details-container {
             grid-column: 1 / 13;
-            position: absolute; inset: 0;
+            position: absolute; left: 0; right: 0; bottom: 10vh;
             display: flex; align-items: flex-end; justify-content: center;
-            padding-bottom: 14vh;
             pointer-events: none;
             z-index: 3;
           }
@@ -709,7 +741,7 @@ export const FullScreenScrollFX = forwardRef<HTMLDivElement, FullScreenFXProps>(
             position: absolute;
             pointer-events: auto;
             opacity: 0;
-            max-width: 640px;
+            max-width: 580px;
             width: calc(100% - 4rem);
           }
           .fx-footer {
@@ -717,8 +749,9 @@ export const FullScreenScrollFX = forwardRef<HTMLDivElement, FullScreenFXProps>(
           }
           .fx-footer-title {
             color: var(--fx-text);
-            font-size: clamp(1.6rem, 7vw, 7rem);
-            font-weight: 900; letter-spacing: -0.01em; line-height: 0.9;
+            font-size: clamp(0.9rem, 1.5vw, 1.4rem);
+            font-weight: 600; letter-spacing: 0.12em; line-height: 1.2;
+            opacity: 0.5;
           }
           .fx-progress {
             width: 200px; height: 2px; margin: 1rem auto 0;
@@ -733,8 +766,6 @@ export const FullScreenScrollFX = forwardRef<HTMLDivElement, FullScreenFXProps>(
             display: flex; justify-content: space-between;
             font-size: 0.8rem; color: var(--fx-text);
           }
-          .fx-end { height: 100vh; display: grid; place-items: center; }
-          .fx-fin { transform: rotate(90deg); color: rgba(245,245,245,0.3); }
           @media (max-width: 900px) {
             .fx-content {
               grid-template-columns: 1fr; row-gap: 3vh; place-items: center;
