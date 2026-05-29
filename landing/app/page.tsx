@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { FullScreenScrollFX } from '@/components/ui/full-screen-scroll-fx';
 
 function TextCard({ tag, body }: { tag: string; body: string }) {
@@ -105,25 +106,73 @@ function InfoCard({
   );
 }
 
+const label: React.CSSProperties = {
+  color: 'rgba(255,255,255,0.3)',
+  fontSize: '0.6rem',
+  letterSpacing: '0.22em',
+  textTransform: 'uppercase',
+  margin: '0 0 1rem',
+  fontFamily: 'inherit',
+};
+const body: React.CSSProperties = {
+  color: 'rgba(255,255,255,0.8)',
+  fontSize: 'clamp(1rem, 1.4vw, 1.15rem)',
+  fontWeight: 400,
+  letterSpacing: '0.01em',
+  textTransform: 'none',
+  lineHeight: 1.75,
+  margin: 0,
+  fontFamily: 'inherit',
+};
+const statVal: React.CSSProperties = {
+  color: 'rgba(255,255,255,0.9)',
+  fontSize: 'clamp(1.1rem, 1.6vw, 1.4rem)',
+  fontWeight: 700,
+  letterSpacing: '-0.01em',
+  lineHeight: 1,
+  fontFamily: 'inherit',
+};
+const statLbl: React.CSSProperties = {
+  color: 'rgba(255,255,255,0.35)',
+  fontSize: '0.65rem',
+  letterSpacing: '0.14em',
+  textTransform: 'uppercase',
+  marginTop: '0.25rem',
+  fontFamily: 'inherit',
+};
+
 const sections = [
   {
     id: 'intro',
     leftLabel: 'Intro',
     title: 'Bike Guardian',
     background:
-      'https://images.unsplash.com/photo-1507035895480-2b3156c31fc8?q=80&w=1920&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1571068316344-75bc76f77890?q=80&w=1920&auto=format&fit=crop',
+    details: (
+      <>
+        <p style={label}>UCSD IEEE · Spring 2026</p>
+        <p style={{ ...body, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', lineHeight: 2.1, fontSize: 'clamp(0.85rem, 1.1vw, 1rem)' }}>
+          Samuel Park<br />
+          Hannah Fletcher<br />
+          Yannis Smith<br />
+          Abigail Romero
+        </p>
+      </>
+    ),
   },
   {
     id: 'issue',
     leftLabel: 'Problem',
     title: 'Bike Theft',
     background:
-      'https://images.unsplash.com/photo-1541625602-84c3fb7bb3df?q=80&w=1920&auto=format&fit=crop',
-    body: (
-      <TextCard
-        tag="Problem"
-        body="Picture this: you wake up, head outside, and your bike is gone. No warning, no trace, nothing. At UCSD, this is not hypothetical. Bike theft notifications hit campus iMessage at least once every week, and it hits close to home. My own roommate had his bike stolen this past winter quarter, with a lock on it. The problem is not that students are careless. It is that the tools they have are passive and outdated. A standard lock cannot alert you, cannot notify you, and by the time you find out your bike is gone, it already is. On a campus this large, a bike is not a luxury. It is how you get to class on time."
-      />
+      'https://images.unsplash.com/photo-1485965120184-e220f721d03e?q=80&w=1920&auto=format&fit=crop',
+    details: (
+      <>
+        <p style={label}>The Problem</p>
+        <p style={body}>
+          Picture this: you wake up, head outside, and your bike is gone. No warning, no trace, nothing. At UCSD, bike theft notifications hit campus iMessage at least once a week. A standard lock cannot alert you, cannot notify you, and by the time you find out your bike is gone, it already is. On a campus this large, a bike is not a luxury. It is how you get to class on time.
+        </p>
+      </>
     ),
   },
   {
@@ -132,11 +181,13 @@ const sections = [
     title: 'Smart Lock',
     background:
       'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=1920&auto=format&fit=crop',
-    body: (
-      <TextCard
-        tag="UCSD IEEE · Spring 2026 · Samuel Park, Hannah Fletcher, Yannis Smith, Abagail"
-        body="The Smart Bike Lock was built to solve exactly what traditional locks cannot. Access is controlled through an RFID sensor that responds only to one authorized card. No keys, nothing to pick. The moment someone tampers with it, the alarm triggers and an alert goes straight to your phone in real time. Whether you are in lecture or across campus, you always know. You always have a chance to respond. This is not just a lock. It is a security system built for students."
-      />
+    details: (
+      <>
+        <p style={label}>Our Solution</p>
+        <p style={body}>
+          The Smart Bike Lock solves what traditional locks cannot. Access is controlled through an RFID sensor that responds only to one authorized card. No keys, nothing to pick. The moment someone tampers with it, the alarm triggers and an alert goes straight to your phone in real time. This is not just a lock. It is a security system built for students.
+        </p>
+      </>
     ),
   },
   {
@@ -146,15 +197,22 @@ const sections = [
     background:
       'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1920&auto=format&fit=crop',
     details: (
-      <InfoCard
-        tag="Components & Modules"
-        stats={[
-          { value: 'RC522', label: 'RFID Reader' },
-          { value: 'MPU-6050', label: 'Accelerometer' },
-          { value: 'ESP32', label: 'Microcontroller' },
-          { value: 'Buzzer', label: 'Alert Module' },
-        ]}
-      />
+      <>
+        <p style={label}>Components & Modules</p>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem 2rem' }}>
+          {[
+            { value: 'RC522', label: 'RFID Reader' },
+            { value: 'MPU-6050', label: 'Accelerometer' },
+            { value: 'ESP32', label: 'Microcontroller' },
+            { value: 'Buzzer', label: 'Alert Module' },
+          ].map(s => (
+            <div key={s.label}>
+              <div style={statVal}>{s.value}</div>
+              <div style={statLbl}>{s.label}</div>
+            </div>
+          ))}
+        </div>
+      </>
     ),
   },
   {
@@ -164,15 +222,47 @@ const sections = [
     background:
       'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1920&auto=format&fit=crop',
     details: (
-      <InfoCard
-        tag="End-to-End Lock Flow"
-        stats={[
-          { value: 'Tap', label: 'RFID Arms Lock' },
-          { value: '0.4g', label: 'Tamper Triggers' },
-          { value: 'Alarm', label: 'Buzzer Sounds' },
-          { value: 'WiFi', label: 'Reset Remotely' },
-        ]}
-      />
+      <>
+        <p style={label}>End-to-End Flow</p>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem 2rem' }}>
+          {[
+            { value: 'Tap', label: 'RFID Arms Lock' },
+            { value: '0.4g', label: 'Tamper Triggers' },
+            { value: 'Alarm', label: 'Buzzer Sounds' },
+            { value: 'WiFi', label: 'Reset Remotely' },
+          ].map(s => (
+            <div key={s.label}>
+              <div style={statVal}>{s.value}</div>
+              <div style={statLbl}>{s.label}</div>
+            </div>
+          ))}
+        </div>
+      </>
+    ),
+  },
+  {
+    id: 'future',
+    leftLabel: 'Future',
+    title: 'Next Steps',
+    background:
+      'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1920&auto=format&fit=crop',
+    details: (
+      <>
+        <p style={label}>Future Updates</p>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem 2rem' }}>
+          {[
+            { value: 'GPS', label: 'Live Tracking' },
+            { value: 'App', label: 'Mobile Alerts' },
+            { value: 'Solar', label: 'Self-Powered' },
+            { value: 'Cloud', label: 'Fleet Management' },
+          ].map(s => (
+            <div key={s.label}>
+              <div style={statVal}>{s.value}</div>
+              <div style={statLbl}>{s.label}</div>
+            </div>
+          ))}
+        </div>
+      </>
     ),
   },
 ];
@@ -293,18 +383,11 @@ export default function Home() {
     <main>
       <FullScreenScrollFX
         sections={sections}
-        header={
-          <>
-            <div>Bike</div>
-            <div>Guardian</div>
-          </>
-        }
-        footer={<div>IEEE · Spring 2026</div>}
         showProgress
         durations={{ change: 0.7, snap: 800 }}
         colors={{
-          text: 'rgba(248,250,252,0.92)',
-          overlay: 'rgba(0,0,0,0.45)',
+          text: 'rgba(248,250,252,0.95)',
+          overlay: 'rgba(0,0,0,0.15)',
           pageBg: '#0F172A',
           stageBg: '#050D18',
         }}
