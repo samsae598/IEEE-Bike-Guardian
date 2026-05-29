@@ -1,37 +1,47 @@
+/* 
+ * HARDWARE WIRING
+ *
+ * MPU Pinout:
+ *   VCC -> 3.3V
+ *   GND -> GND
+ *   SDA -> Pin 8
+ *   SCL -> Pin 9
+ *   
+ * Buzzer Pinout:
+ *   POS -> Pin 18
+ *   NEG -> GND
+ */
 #include <Wire.h>
 #include <WiFi.h>
 #include <WebServer.h>
 
+// --- WiFi Access Point ---
 const char* ssid     = "THEFT ALERT";
 const char* password = "pineapple";
 
 WebServer server(80);
 
+// --- Buzzer ---
 const int buzzerPin = 18; 
 const int freq = 1000;  
 const int resolution = 8; 
 
+// --- MPU-6050 ---
 const int   MPU_ADDR     = 0x68;
-const float THRESHOLD    = 0.45;
-const int   SUSTAINED_MS = 7000;
+const float THRESHOLD    = 0.4;
+const int   SUSTAINED_MS = 8000;
 const int   SAMPLE_RATE_MS = 50;
-const int   GRACE_MS     = 3000;
-const int   WARMUP_MS    = 5000;
-const int   CALIB_SAMPLES = 200;
-const float CALIB_MAX_VAR = 0.01;
+const int   GRACE_MS     = 2000;
+const int   SAMPLE_COUNT = 200;
 
 float baselineX, baselineY, baselineZ;
-
-const int SMOOTH_N = 5;
-float     smoothX[SMOOTH_N] = {}, smoothY[SMOOTH_N] = {}, smoothZ[SMOOTH_N] = {};
-int       smoothIdx = 0;
-
 unsigned long lastSample    = 0;
 unsigned long movementStart = 0;
 unsigned long lastMoveTime  = 0;
 bool moving      = false;
 bool alarmActive = false;
 
+// --- Event Log ---
 String eventLog[5];
 int eventCount = 0;
 
@@ -42,6 +52,7 @@ void addEvent(String msg) {
     Serial.println(msg);
 }
 
+// --- Web Handlers ---
 void handleRoot() {
     String html = R"rawliteral(
 <!DOCTYPE html>
@@ -140,6 +151,7 @@ void handleStatus() {
     server.send(200, "application/json", json);
 }
 
+// --- MPU ---
 void readAccel(float* ax, float* ay, float* az) {
     Wire.beginTransmission(MPU_ADDR);
     Wire.write(0x3B);
@@ -150,55 +162,27 @@ void readAccel(float* ax, float* ay, float* az) {
     *az = ((Wire.read() << 8) | Wire.read()) / 16384.0;
 }
 
-bool calibrate() {
+void calibrate() {
     Serial.println("Calibrating — hold still...");
-    float sx = 0, sy = 0, sz = 0;
-    float sx2 = 0, sy2 = 0, sz2 = 0;
-    float ax, ay, az;
-    for (int i = 0; i < CALIB_SAMPLES; i++) {
+    float sx = 0, sy = 0, sz = 0, ax, ay, az;
+    for (int i = 0; i < SAMPLE_COUNT; i++) {
         readAccel(&ax, &ay, &az);
-        sx  += ax;  sy  += ay;  sz  += az;
-        sx2 += ax*ax; sy2 += ay*ay; sz2 += az*az;
+        sx += ax; sy += ay; sz += az;
         delay(10);
     }
-    float meanX = sx / CALIB_SAMPLES;
-    float meanY = sy / CALIB_SAMPLES;
-    float meanZ = sz / CALIB_SAMPLES;
-    float varX = (sx2 / CALIB_SAMPLES) - (meanX * meanX);
-    float varY = (sy2 / CALIB_SAMPLES) - (meanY * meanY);
-    float varZ = (sz2 / CALIB_SAMPLES) - (meanZ * meanZ);
-    if (varX > CALIB_MAX_VAR || varY > CALIB_MAX_VAR || varZ > CALIB_MAX_VAR) {
-        Serial.println("Sensor unstable — retrying calibration...");
-        return false;
-    }
-    baselineX = meanX;
-    baselineY = meanY;
-    baselineZ = meanZ;
-    for (int i = 0; i < SMOOTH_N; i++) {
-        smoothX[i] = baselineX;
-        smoothY[i] = baselineY;
-        smoothZ[i] = baselineZ;
-    }
+    baselineX = sx / SAMPLE_COUNT;
+    baselineY = sy / SAMPLE_COUNT;
+    baselineZ = sz / SAMPLE_COUNT;
     Serial.println("Ready.");
-    return true;
 }
+
+// -----------------------------------------------
 
 void setup() {
     Serial.begin(115200);
     delay(1000);
 
-    ledcAttach(buzzerPin, freq, resolution);
-    ledcWriteTone(buzzerPin, 0);
-
-    Wire.begin(8, 9);
-    Wire.beginTransmission(MPU_ADDR);
-    Wire.write(0x6B);
-    Wire.write(0x00);
-    Wire.endTransmission(true);
-
-    delay(WARMUP_MS);
-    while (!calibrate()) { delay(1000); }
-
+    // WiFi AP
     WiFi.softAP(ssid, password);
     Serial.print("AP IP: ");
     Serial.println(WiFi.softAPIP());
@@ -209,6 +193,17 @@ void setup() {
     server.begin();
     Serial.println("Web server started");
 
+    // Buzzer
+    ledcAttach(buzzerPin, freq, resolution);
+
+    // MPU
+    Wire.begin(8, 9); // SDA, SCL
+    Wire.beginTransmission(MPU_ADDR);
+    Wire.write(0x6B);
+    Wire.write(0x00);
+    Wire.endTransmission(true);
+
+    calibrate();
     addEvent("System started");
 }
 
@@ -216,9 +211,9 @@ void loop() {
     server.handleClient();
 
     if (alarmActive) {
-        ledcWriteTone(buzzerPin, 4500);
+        ledcWriteTone(buzzerPin, 3000);
         delay(400);
-        ledcWriteTone(buzzerPin, 4000);
+        ledcWriteTone(buzzerPin, 2200);
         delay(400);
     } else {
         ledcWriteTone(buzzerPin, 0); 
@@ -230,25 +225,10 @@ void loop() {
     float ax, ay, az;
     readAccel(&ax, &ay, &az);
 
-    smoothX[smoothIdx] = ax;
-    smoothY[smoothIdx] = ay;
-    smoothZ[smoothIdx] = az;
-    smoothIdx = (smoothIdx + 1) % SMOOTH_N;
-
-    float avgX = 0, avgY = 0, avgZ = 0;
-    for (int i = 0; i < SMOOTH_N; i++) {
-        avgX += smoothX[i];
-        avgY += smoothY[i];
-        avgZ += smoothZ[i];
-    }
-    avgX /= SMOOTH_N;
-    avgY /= SMOOTH_N;
-    avgZ /= SMOOTH_N;
-
     float delta = sqrt(
-        pow(avgX - baselineX, 2) +
-        pow(avgY - baselineY, 2) +
-        pow(avgZ - baselineZ, 2)
+        pow(ax - baselineX, 2) +
+        pow(ay - baselineY, 2) +
+        pow(az - baselineZ, 2)
     );
 
     if (delta > THRESHOLD) {
