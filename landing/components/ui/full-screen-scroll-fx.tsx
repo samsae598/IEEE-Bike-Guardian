@@ -709,7 +709,7 @@ export const FullScreenScrollFX = forwardRef<HTMLDivElement, FullScreenFXProps>(
             top: 0;
             left: 0;
             right: 0;
-            pointer-events: auto;
+            pointer-events: none;
             opacity: 0;
             width: 100%;
           }

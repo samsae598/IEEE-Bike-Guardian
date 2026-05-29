@@ -3,108 +3,6 @@
 import React from 'react';
 import { FullScreenScrollFX } from '@/components/ui/full-screen-scroll-fx';
 
-function TextCard({ tag, body }: { tag: string; body: string }) {
-  return (
-    <div
-      style={{
-        background: 'rgba(0,0,0,0.6)',
-        border: '1px solid rgba(255,255,255,0.08)',
-        borderRadius: '1rem',
-        padding: '1.25rem 1.5rem',
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)',
-      }}
-    >
-      <p
-        style={{
-          color: 'rgba(255,255,255,0.35)',
-          fontSize: '0.65rem',
-          letterSpacing: '0.18em',
-          textTransform: 'uppercase',
-          marginBottom: '0.75rem',
-          fontFamily: 'monospace',
-        }}
-      >
-        {tag}
-      </p>
-      <p
-        style={{
-          color: 'rgba(255,255,255,0.88)',
-          fontSize: 'clamp(0.78rem, 1.1vw, 0.92rem)',
-          lineHeight: 1.65,
-          fontWeight: 400,
-          margin: 0,
-          textTransform: 'none',
-          letterSpacing: '0.01em',
-        }}
-      >
-        {body}
-      </p>
-    </div>
-  );
-}
-
-function InfoCard({
-  tag,
-  stats,
-}: {
-  tag: string;
-  stats: { value: string; label: string }[];
-}) {
-  return (
-    <div
-      style={{
-        background: 'rgba(0,0,0,0.55)',
-        border: '1px solid rgba(255,255,255,0.08)',
-        borderRadius: '1rem',
-        padding: '1.25rem 1.5rem',
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)',
-      }}
-    >
-      <p
-        style={{
-          color: 'rgba(255,255,255,0.35)',
-          fontSize: '0.65rem',
-          letterSpacing: '0.18em',
-          textTransform: 'uppercase',
-          marginBottom: '0.85rem',
-          fontFamily: 'var(--font-dm-sans)',
-        }}
-      >
-        {tag}
-      </p>
-      <div style={{ display: 'flex', gap: '2rem' }}>
-        {stats.map(({ value, label }) => (
-          <div key={label}>
-            <div
-              style={{
-                color: '#fff',
-                fontSize: 'clamp(1.1rem, 2.2vw, 1.5rem)',
-                fontWeight: 700,
-                lineHeight: 1,
-                fontFamily: 'var(--font-space-grotesk)',
-              }}
-            >
-              {value}
-            </div>
-            <div
-              style={{
-                color: 'rgba(255,255,255,0.35)',
-                fontSize: '0.7rem',
-                marginTop: '0.3rem',
-                letterSpacing: '0.06em',
-                fontFamily: 'var(--font-dm-sans)',
-              }}
-            >
-              {label}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
 
 const label: React.CSSProperties = {
   color: 'rgba(255,255,255,0.3)',
@@ -122,22 +20,6 @@ const body: React.CSSProperties = {
   textTransform: 'none',
   lineHeight: 1.75,
   margin: 0,
-  fontFamily: 'inherit',
-};
-const statVal: React.CSSProperties = {
-  color: 'rgba(255,255,255,0.9)',
-  fontSize: 'clamp(1.1rem, 1.6vw, 1.4rem)',
-  fontWeight: 700,
-  letterSpacing: '-0.01em',
-  lineHeight: 1,
-  fontFamily: 'inherit',
-};
-const statLbl: React.CSSProperties = {
-  color: 'rgba(255,255,255,0.35)',
-  fontSize: '0.65rem',
-  letterSpacing: '0.14em',
-  textTransform: 'uppercase',
-  marginTop: '0.25rem',
   fontFamily: 'inherit',
 };
 
@@ -198,51 +80,13 @@ const sections = [
       'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1920&auto=format&fit=crop',
     details: (
       <>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem', width: '100%' }}>
-          <div>
-            <p style={label}>Hardware</p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-              {[
-                { value: 'ESP32', label: 'Microcontroller' },
-                { value: 'Arduino UNO R3', label: 'Dev Board' },
-                { value: 'PN532', label: 'NFC / RFID Module' },
-                { value: '9g Micro Servo', label: 'Actuation Motor' },
-                { value: '9V Battery', label: 'Power Supply' },
-              ].map(s => (
-                <div key={s.label} style={{
-                  padding: '0.55rem 0.8rem',
-                  background: 'rgba(255,255,255,0.07)',
-                  border: '1px solid rgba(255,255,255,0.11)',
-                  borderRadius: '0.5rem',
-                  width: '100%',
-                }}>
-                  <div style={{ color: '#fff', fontSize: '0.88rem', fontWeight: 600, letterSpacing: '0.01em' }}>{s.value}</div>
-                  <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.6rem', letterSpacing: '0.14em', textTransform: 'uppercase', marginTop: '0.2rem' }}>{s.label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div>
-            <p style={label}>Software & Design</p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-              {[
-                { value: 'Arduino C++', label: 'Firmware Language' },
-                { value: 'Onshape', label: 'CAD Modeling' },
-              ].map(s => (
-                <div key={s.label} style={{
-                  padding: '0.55rem 0.8rem',
-                  background: 'rgba(255,255,255,0.07)',
-                  border: '1px solid rgba(255,255,255,0.11)',
-                  borderRadius: '0.5rem',
-                  width: '100%',
-                }}>
-                  <div style={{ color: '#fff', fontSize: '0.88rem', fontWeight: 600, letterSpacing: '0.01em' }}>{s.value}</div>
-                  <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.6rem', letterSpacing: '0.14em', textTransform: 'uppercase', marginTop: '0.2rem' }}>{s.label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+        <p style={label}>Stack and Materials</p>
+        <p style={body}>
+          For the software side, we designed the enclosure using Onshape for CAD and wrote all of our code in C++ through the Arduino IDE.
+        </p>
+        <p style={{ ...body, marginTop: '0.85rem' }}>
+          On the hardware side, the build consists of a PN532 NFC RFID module for card scanning, an Arduino Uno R3 to handle the locking mechanism, an ESP32 to run the WiFi dashboard, an MPU-6050 accelerometer for motion detection, a buzzer module for the alarm, a 9g micro servo motor to physically operate the lock, and 9 volt batteries to power the system independently without needing to be plugged in.
+        </p>
       </>
     ),
   },
@@ -251,22 +95,59 @@ const sections = [
     leftLabel: 'System',
     title: 'How It Works',
     background:
-      'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1920&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?q=80&w=1920&auto=format&fit=crop',
     details: (
       <>
         <p style={label}>End-to-End Flow</p>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem 2rem' }}>
-          {[
-            { value: 'Tap', label: 'RFID Arms Lock' },
-            { value: '0.4g', label: 'Tamper Triggers' },
-            { value: 'Alarm', label: 'Buzzer Sounds' },
-            { value: 'WiFi', label: 'Reset Remotely' },
-          ].map(s => (
-            <div key={s.label}>
-              <div style={statVal}>{s.value}</div>
-              <div style={statLbl}>{s.label}</div>
+        <p style={{ ...body, fontSize: 'clamp(0.82rem, 1.1vw, 0.96rem)' }}>
+          Every RFID card, including any card with a microchip such as our UCSD student IDs, carries a Unique Identifier burned into it that never changes. To assign the lock we first had to find those numbers. We built a simple card reader that scanned each card and printed the UID directly into a serial monitor, giving us the exact values we needed. Once programmed in, the module compares every scan against that stored value. A match rotates the servo and the lock opens. If it does not match, nothing happens. No key, no combination. The only thing that opens this lock is the one card it was assigned to.
+        </p>
+        <p style={{ ...body, marginTop: '0.75rem', fontSize: 'clamp(0.82rem, 1.1vw, 0.96rem)' }}>
+          For the security side, an MPU-6050 accelerometer continuously monitors the lock for motion. At startup it establishes a baseline of its resting position, and the moment it detects any deviation, whether from tinkering, shaking, or tampering, it registers the disturbance. If that motion is sustained, the alarm triggers.
+        </p>
+        <p style={{ ...body, marginTop: '0.75rem', fontSize: 'clamp(0.82rem, 1.1vw, 0.96rem)' }}>
+          At that point the ESP32 takes over. It hosts a complete HTML page directly from the board. When you connect to its WiFi network and open a browser, that page loads instantly and begins polling the device every second, updating your screen with the current motion status, alarm state, and a live event log in real time. You can reset the alarm remotely straight from the page. No internet, no downloads, just a live security dashboard served from a microcontroller the size of your palm.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: 'difficulties',
+    leftLabel: 'Difficulties',
+    title: 'Difficulties',
+    background:
+      'https://images.unsplash.com/photo-1563770660941-20978e870e26?q=80&w=1920&auto=format&fit=crop',
+    details: (
+      <>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem 3rem', width: '100%' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            <div>
+              <p style={{ ...label, marginBottom: '0.4rem' }}>RFID Modules</p>
+              <p style={{ ...body, fontSize: 'clamp(0.78rem, 1vw, 0.88rem)' }}>
+                Cheap Amazon modules would work for an hour then stop responding entirely. One became unusable after desoldering during enclosure fitting. A PN532 donated by a friend from the ECE tutoring center saved the project. It was reliable and capable of reading cards through plastic. Soldering it in, knowing it was our last sensor, was nerve-wracking.
+              </p>
             </div>
-          ))}
+            <div>
+              <p style={{ ...label, marginBottom: '0.4rem' }}>Motion Sensor</p>
+              <p style={{ ...body, fontSize: 'clamp(0.78rem, 1vw, 0.88rem)' }}>
+                The MPU-6050 kept interpreting changes in orientation as active motion. If the lock was mounted at a different angle than where it calibrated, the alarm would fire even while perfectly still. On top of that, the alarm would continue triggering after resetting it through the browser. Getting the calibration and reset logic right took the most debugging time of anything in this project.
+              </p>
+            </div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            <div>
+              <p style={{ ...label, marginBottom: '0.4rem' }}>WiFi</p>
+              <p style={{ ...body, fontSize: 'clamp(0.78rem, 1vw, 0.88rem)' }}>
+                The ESP32 network would occasionally not show up on our phones at all, even when the board was fully powered on. Stronger nearby networks would drown it out, and diagnosing whether the issue was the board, the network stack, or the environment added a lot of uncertainty late in development.
+              </p>
+            </div>
+            <div>
+              <p style={{ ...label, marginBottom: '0.4rem' }}>Lock Mechanism</p>
+              <p style={{ ...body, fontSize: 'clamp(0.78rem, 1vw, 0.88rem)' }}>
+                Designing a locking mechanism around a single servo was its own challenge. We had to ensure the lock could not be forced open by manually rotating the rod. A few wires also snapped during prototyping, which we fixed by soldering onto adjacent pins on the same breadboard branch.
+              </p>
+            </div>
+          </div>
         </div>
       </>
     ),
@@ -280,16 +161,36 @@ const sections = [
     details: (
       <>
         <p style={label}>Future Updates</p>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem 2rem' }}>
+        <p style={body}>
+          Working under a $25 budget meant compromises. Given more time and resources, here is what we would build next.
+        </p>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem 3rem', marginTop: '1rem', width: '100%' }}>
           {[
-            { value: 'GPS', label: 'Live Tracking' },
-            { value: 'App', label: 'Mobile Alerts' },
-            { value: 'Solar', label: 'Self-Powered' },
-            { value: 'Cloud', label: 'Fleet Management' },
+            {
+              value: 'Internet WiFi',
+              label: 'Connect the ESP32 to the internet so alerts push directly to your phone from anywhere on campus, not just within range of the board.',
+            },
+            {
+              value: 'Sturdier Lock',
+              label: 'Redesign with a proper interlocking mechanism. The current servo-based design works but someone determined could force it open.',
+            },
+            {
+              value: 'Smaller Enclosure',
+              label: 'Shrink the housing down to a compact form factor that is practical to mount on an actual bike and harder to spot.',
+            },
+            {
+              value: 'Motion Calibration',
+              label: 'Fine tune the sensitivity so the alarm distinguishes real tampering from innocent movement like wind or foot traffic.',
+            },
           ].map(s => (
-            <div key={s.label}>
-              <div style={statVal}>{s.value}</div>
-              <div style={statLbl}>{s.label}</div>
+            <div key={s.value} style={{
+              padding: '0.7rem 0.9rem',
+              background: 'rgba(255,255,255,0.06)',
+              border: '1px solid rgba(255,255,255,0.1)',
+              borderRadius: '0.5rem',
+            }}>
+              <div style={{ color: '#fff', fontSize: '1rem', fontWeight: 700, marginBottom: '0.35rem' }}>{s.value}</div>
+              <div style={{ color: 'rgba(255,255,255,0.82)', fontSize: '0.88rem', lineHeight: 1.55, letterSpacing: '0.01em', textTransform: 'none' }}>{s.label}</div>
             </div>
           ))}
         </div>
