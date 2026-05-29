@@ -198,19 +198,50 @@ const sections = [
       'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1920&auto=format&fit=crop',
     details: (
       <>
-        <p style={label}>Components & Modules</p>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem 2rem' }}>
-          {[
-            { value: 'RC522', label: 'RFID Reader' },
-            { value: 'MPU-6050', label: 'Accelerometer' },
-            { value: 'ESP32', label: 'Microcontroller' },
-            { value: 'Buzzer', label: 'Alert Module' },
-          ].map(s => (
-            <div key={s.label}>
-              <div style={statVal}>{s.value}</div>
-              <div style={statLbl}>{s.label}</div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem', width: '100%' }}>
+          <div>
+            <p style={label}>Hardware</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+              {[
+                { value: 'ESP32', label: 'Microcontroller' },
+                { value: 'Arduino UNO R3', label: 'Dev Board' },
+                { value: 'PN532', label: 'NFC / RFID Module' },
+                { value: '9g Micro Servo', label: 'Actuation Motor' },
+                { value: '9V Battery', label: 'Power Supply' },
+              ].map(s => (
+                <div key={s.label} style={{
+                  padding: '0.55rem 0.8rem',
+                  background: 'rgba(255,255,255,0.07)',
+                  border: '1px solid rgba(255,255,255,0.11)',
+                  borderRadius: '0.5rem',
+                  width: '100%',
+                }}>
+                  <div style={{ color: '#fff', fontSize: '0.88rem', fontWeight: 600, letterSpacing: '0.01em' }}>{s.value}</div>
+                  <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.6rem', letterSpacing: '0.14em', textTransform: 'uppercase', marginTop: '0.2rem' }}>{s.label}</div>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
+          <div>
+            <p style={label}>Software & Design</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+              {[
+                { value: 'Arduino C++', label: 'Firmware Language' },
+                { value: 'Onshape', label: 'CAD Modeling' },
+              ].map(s => (
+                <div key={s.label} style={{
+                  padding: '0.55rem 0.8rem',
+                  background: 'rgba(255,255,255,0.07)',
+                  border: '1px solid rgba(255,255,255,0.11)',
+                  borderRadius: '0.5rem',
+                  width: '100%',
+                }}>
+                  <div style={{ color: '#fff', fontSize: '0.88rem', fontWeight: 600, letterSpacing: '0.01em' }}>{s.value}</div>
+                  <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.6rem', letterSpacing: '0.14em', textTransform: 'uppercase', marginTop: '0.2rem' }}>{s.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </>
     ),

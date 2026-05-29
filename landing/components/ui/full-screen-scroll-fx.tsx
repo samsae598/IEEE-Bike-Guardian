@@ -698,18 +698,20 @@ export const FullScreenScrollFX = forwardRef<HTMLDivElement, FullScreenFXProps>(
           .fx-word { display: inline-block; vertical-align: middle; }
           .fx-details-container {
             grid-column: 1 / 13;
-            position: absolute; left: 0; right: 0; bottom: 22vh;
-            display: flex; align-items: flex-end; justify-content: flex-start;
+            position: absolute; left: 0; right: 0; top: 48vh;
+            display: flex; align-items: flex-start; justify-content: flex-start;
             padding: 0 var(--fx-grid-px);
             pointer-events: none;
             z-index: 3;
           }
           .fx-detail-item {
             position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
             pointer-events: auto;
             opacity: 0;
-            max-width: 680px;
-            width: 55%;
+            width: 100%;
           }
           .fx-footer {
             grid-column: 1 / 13; align-self: end; padding-bottom: 4vh; text-align: center;
