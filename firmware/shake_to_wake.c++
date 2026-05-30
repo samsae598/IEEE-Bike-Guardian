@@ -34,7 +34,7 @@ const int   SAMPLE_RATE_MS = 50;
 const int   GRACE_MS     = 2000;
 const int   SAMPLE_COUNT = 200;
 
-float baselineX, baselineY, baselineZ;
+float prevX, prevY, prevZ;
 unsigned long lastSample    = 0;
 unsigned long movementStart = 0;
 unsigned long lastMoveTime  = 0;
@@ -162,20 +162,6 @@ void readAccel(float* ax, float* ay, float* az) {
     *az = ((Wire.read() << 8) | Wire.read()) / 16384.0;
 }
 
-void calibrate() {
-    Serial.println("Calibrating — hold still...");
-    float sx = 0, sy = 0, sz = 0, ax, ay, az;
-    for (int i = 0; i < SAMPLE_COUNT; i++) {
-        readAccel(&ax, &ay, &az);
-        sx += ax; sy += ay; sz += az;
-        delay(10);
-    }
-    baselineX = sx / SAMPLE_COUNT;
-    baselineY = sy / SAMPLE_COUNT;
-    baselineZ = sz / SAMPLE_COUNT;
-    Serial.println("Ready.");
-}
-
 // -----------------------------------------------
 
 void setup() {
@@ -203,7 +189,10 @@ void setup() {
     Wire.write(0x00);
     Wire.endTransmission(true);
 
-    calibrate();
+    float ax, ay, az;
+    readAccel(&ax, &ay, &az);
+    prevX = ax; prevY = ay; prevZ = az;
+
     addEvent("System started");
 }
 
@@ -226,10 +215,11 @@ void loop() {
     readAccel(&ax, &ay, &az);
 
     float delta = sqrt(
-        pow(ax - baselineX, 2) +
-        pow(ay - baselineY, 2) +
-        pow(az - baselineZ, 2)
+    pow(ax - prevX, 2) +
+    pow(ay - prevY, 2) +
+    pow(az - prevZ, 2)
     );
+    prevX = ax; prevY = ay; prevZ = az;
 
     if (delta > THRESHOLD) {
         lastMoveTime = millis();
