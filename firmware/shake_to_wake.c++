@@ -28,11 +28,10 @@ const int resolution = 8;
 
 // --- MPU-6050 ---
 const int   MPU_ADDR     = 0x68;
-const float THRESHOLD    = 0.4;
+const float THRESHOLD    = 0.1;
 const int   SUSTAINED_MS = 8000;
 const int   SAMPLE_RATE_MS = 50;
 const int   GRACE_MS     = 2000;
-const int   SAMPLE_COUNT = 200;
 
 float prevX, prevY, prevZ;
 unsigned long lastSample    = 0;
@@ -219,6 +218,7 @@ void loop() {
     pow(ay - prevY, 2) +
     pow(az - prevZ, 2)
     );
+    //Serial.println(delta);  // For testing threshold value
     prevX = ax; prevY = ay; prevZ = az;
 
     if (delta > THRESHOLD) {
