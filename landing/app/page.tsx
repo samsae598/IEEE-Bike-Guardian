@@ -52,7 +52,7 @@ const sections = [
       <>
         <p style={label}>The Problem</p>
         <p style={body}>
-          Picture this: you wake up, head outside, and your bike is gone. No warning, no trace, nothing. At UCSD, this is not hypothetical. Bike theft notifications hit campus iMessage at least once every week, and it hits close to home. My own roommate had his bike stolen this past winter quarter, with a lock on it.
+          Picture this: you wake up, head outside, and your bike or scooter is gone. No warning, no trace, nothing. At UCSD, this is not hypothetical. Bike theft notifications hit campus iMessage at least once every week, and it hits close to home. My own roommate had his scooter stolen this past winter quarter, with a lock on it.
         </p>
         <p style={{ ...body, marginTop: '0.85rem' }}>
           The problem is not that students are careless. It is that the tools they have are passive and outdated. A standard lock cannot alert you, cannot notify you, and by the time you find out your bike is gone, it already is. On a campus this large, a bike is not a luxury. It is how you get to class on time. Losing it means losing your day. This is exactly the kind of problem that the Spring 2026 Quarterly Projects theme of safety and security was made for, and this is the problem we set out to solve.
