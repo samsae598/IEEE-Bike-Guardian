@@ -207,7 +207,7 @@ const sections = [
 
 const galleryPhotos = [
   { src: '/gallery/enclosure.jpg',          caption: 'Final Enclosure',       tall: true  },
-  { src: '/gallery/rfid-module.jpg',        caption: 'RC522 Module',          tall: false },
+  { src: '/gallery/rfid-module.jpg',        caption: 'PN532 NFC RFID Module',          tall: false },
   { src: '/gallery/assembly.jpg',           caption: 'Prototype Assembly',    tall: false },
   { src: '/gallery/components-spread.jpg',  caption: 'Component Spread',      tall: true  },
   { src: '/gallery/esp32-buzzer.jpg',       caption: 'ESP32 & Buzzer',        tall: false },
