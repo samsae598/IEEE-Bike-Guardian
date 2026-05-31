@@ -52,7 +52,10 @@ const sections = [
       <>
         <p style={label}>The Problem</p>
         <p style={body}>
-          Picture this: you wake up, head outside, and your bike is gone. No warning, no trace, nothing. At UCSD, bike theft notifications hit campus iMessage at least once a week. A standard lock cannot alert you, cannot notify you, and by the time you find out your bike is gone, it already is. On a campus this large, a bike is not a luxury. It is how you get to class on time.
+          Picture this: you wake up, head outside, and your bike is gone. No warning, no trace, nothing. At UCSD, this is not hypothetical. Bike theft notifications hit campus iMessage at least once every week, and it hits close to home. My own roommate had his bike stolen this past winter quarter, with a lock on it.
+        </p>
+        <p style={{ ...body, marginTop: '0.85rem' }}>
+          The problem is not that students are careless. It is that the tools they have are passive and outdated. A standard lock cannot alert you, cannot notify you, and by the time you find out your bike is gone, it already is. On a campus this large, a bike is not a luxury. It is how you get to class on time. Losing it means losing your day. This is exactly the kind of problem that the Spring 2026 Quarterly Projects theme of safety and security was made for, and this is the problem we set out to solve.
         </p>
       </>
     ),
@@ -67,7 +70,10 @@ const sections = [
       <>
         <p style={label}>Our Solution</p>
         <p style={body}>
-          The Smart Bike Lock solves what traditional locks cannot. Access is controlled through an RFID sensor that responds only to one authorized card. No keys, nothing to pick. The moment someone tampers with it, the alarm triggers and an alert goes straight to your phone in real time. This is not just a lock. It is a security system built for students.
+          The Smart Bike Lock solves what traditional locks cannot. Access is controlled through an RFID sensor that responds only to one authorized card. No keys, nothing to pick. The moment someone tampers with it, the alarm triggers and an alert goes straight to your phone in real time. Whether you are in lecture or across campus, you always know. You always have a chance to respond.
+        </p>
+        <p style={{ ...body, marginTop: '0.85rem' }}>
+          This is not just a lock. It is a security system built for students.
         </p>
       </>
     ),
@@ -103,7 +109,7 @@ const sections = [
           Every RFID card, including any card with a microchip such as our UCSD student IDs, carries a Unique Identifier burned into it that never changes. To assign the lock we first had to find those numbers. We built a simple card reader that scanned each card and printed the UID directly into a serial monitor, giving us the exact values we needed. Once programmed in, the module compares every scan against that stored value. A match rotates the servo and the lock opens. If it does not match, nothing happens. No key, no combination. The only thing that opens this lock is the one card it was assigned to.
         </p>
         <p style={{ ...body, marginTop: '0.75rem', fontSize: 'clamp(0.82rem, 1.1vw, 0.96rem)' }}>
-          For the security side, an MPU-6050 accelerometer continuously monitors the lock for motion. At startup it establishes a baseline of its resting position, and the moment it detects any deviation, whether from tinkering, shaking, or tampering, it registers the disturbance. If that motion is sustained, the alarm triggers.
+          For the security side, an MPU-6050 accelerometer continuously monitors the lock for motion. It establishes a reference point, then continuously compares each new reading to the last. Once it detects change in movement, whether from tinkering, shaking, or tampering, it registers the disturbance. If that motion is sustained, the alarm triggers.
         </p>
         <p style={{ ...body, marginTop: '0.75rem', fontSize: 'clamp(0.82rem, 1.1vw, 0.96rem)' }}>
           At that point the ESP32 takes over. It hosts a complete HTML page directly from the board. When you connect to its WiFi network and open a browser, that page loads instantly and begins polling the device every second, updating your screen with the current motion status, alarm state, and a live event log in real time. You can reset the alarm remotely straight from the page. No internet, no downloads, just a live security dashboard served from a microcontroller the size of your palm.
