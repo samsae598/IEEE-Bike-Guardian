@@ -35,9 +35,7 @@ const sections = [
         <p style={label}>UCSD IEEE · Spring 2026</p>
         <p style={{ ...body, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', lineHeight: 2.1, fontSize: 'clamp(0.85rem, 1.1vw, 1rem)' }}>
           Samuel Park<br />
-          Hannah Fletcher<br />
-          Yannis Smith<br />
-          Abigail Romero
+          Hannah Fletcher
         </p>
       </>
     ),
@@ -142,9 +140,9 @@ const sections = [
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             <div>
-              <p style={{ ...label, marginBottom: '0.4rem' }}>WiFi</p>
+              <p style={{ ...label, marginBottom: '0.4rem' }}>Teamwork</p>
               <p style={{ ...body, fontSize: 'clamp(0.78rem, 1vw, 0.88rem)' }}>
-                The ESP32 network would occasionally not show up on our phones at all, even when the board was fully powered on. Stronger nearby networks would drown it out, and diagnosing whether the issue was the board, the network stack, or the environment added a lot of uncertainty late in development.
+                Our teammates were often unresponsive despite our attempts to communicate meeting times. Unfortunately, due to inactivity and lack of communication throughout our team, this project ultimately led to be a 2 person project. Had our teammates have been more cooperative, we feel that we would've achieved a lot more with our product.
               </p>
             </div>
             <div>
