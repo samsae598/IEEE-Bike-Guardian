@@ -142,7 +142,7 @@ const sections = [
             <div>
               <p style={{ ...label, marginBottom: '0.4rem' }}>Teamwork</p>
               <p style={{ ...body, fontSize: 'clamp(0.78rem, 1vw, 0.88rem)' }}>
-                Our teammates were often unresponsive despite our attempts to communicate meeting times. Unfortunately, due to inactivity and lack of communication throughout our team, this project ultimately led to be a 2 person project. Had our teammates have been more cooperative, we feel that we would've achieved a lot more with our product.
+                Our teammates were often unresponsive despite our attempts to communicate meeting times. Unfortunately, due to inactivity and lack of communication throughout our team, this project ultimately led to be a two person project. Had our teammates have been more cooperative, we feel that we would've achieved a lot more with our product.
               </p>
             </div>
             <div>
